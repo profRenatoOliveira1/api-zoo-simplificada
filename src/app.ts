@@ -131,6 +131,25 @@ server.delete('/remover/animal', async (req, res) => {
     }
 });
 
+server.put('/atualizar/animal', async (req, res) => {
+    // Desestruturando objeto recebido pelo front-end
+    const { nome, idade, genero, envergadura } = req.body;
+    const idAnimal = parseInt(req.query.idAnimal as string);
+
+    // Instanciando objeto Ave
+    const novaAve = new Ave(nome, idade, genero, envergadura);
+
+    // Chama o método para persistir a ave no banco de dados
+    const result = await Ave.atualizarAve(novaAve, idAnimal);
+
+    // Verifica se a query foi executada com sucesso
+    if (result) {
+        return res.status(200).json('Ave atualizada com sucesso');
+    } else {
+        return res.status(400).json('Não foi possível atualizar a ave no banco de dados');
+    }
+});
+
 new DatabaseModel().testeConexao().then((resbd) => {
     if(resbd) {
         server.listen(port, () => {
