@@ -177,7 +177,7 @@ export class Ave extends Animal {
     /**
      * Atualiza as informações de uma ave no banco de dados
      * @param ave Objeto ave contendo as informações
-     * @param idAve id da ave
+     * @param idAve id da ave a ser alterada
      * @returns **true** caso a atualização seja feita, **false** caso ocorra algum problema
      */
     static async atualizarAve(ave: Ave, idAve: number): Promise<Boolean> {
@@ -192,6 +192,8 @@ export class Ave extends Animal {
                                         generoAnimal='${ave.getGeneroAnimal().toUpperCase()}',
                                         envergadura=${ave.getEnvergadura()}
                                     WHERE idAnimal=${idAve}`;
+            
+            // executa a query
             await database.query(queryUpdateAve)
             // Testar o resultado da query
             .then((result) => {
