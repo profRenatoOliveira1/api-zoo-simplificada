@@ -120,10 +120,10 @@ server.post('/novo/atracao', async (req, res) => {
 });
 
 // Rota para remover um animal
-server.delete('/remover/animal', async (req, res) => {
+server.delete('/remover/animal', async (req, res) => {   
     // recuperando o id do animal a ser removido
     const idAnimal = parseInt(req.query.idAnimal as string);
-
+    
     // chama a função para remover o animal e armazena o resultado na variável
     const resultado = await Ave.removerAve(idAnimal);
     

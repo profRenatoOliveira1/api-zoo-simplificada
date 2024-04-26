@@ -108,7 +108,7 @@ export class Atracao {
      * @param atracao Objeto do tipo Atracao
      * @returns **true** caso sucesso, **false** caso erro
      */
-    static async cadastrarAtracao(atracao: Atracao): Promise<any>;
+    static async cadastrarAtracao(atracao: Atracao): Promise<boolean>;
     /**
      * Cadastra um objeto do tipo Atracao no banco de dados
      * 
@@ -116,12 +116,12 @@ export class Atracao {
      * @param idHabitat Id do habitat ao qual a atracão pertence
      * @returns **true** caso sucesso, **false** caso erro
      */
-    static async cadastrarAtracao(atracao: Atracao, idHabitat: Habitat): Promise<any>;
+    static async cadastrarAtracao(atracao: Atracao, idHabitat: Habitat): Promise<boolean>;
 
     /**
      * Implementação da classe cadastrarAtracao
      */
-    static async cadastrarAtracao(atracao: Atracao, idHabitat?: Habitat): Promise<any> {
+    static async cadastrarAtracao(atracao: Atracao, idHabitat?: Habitat): Promise<boolean> {
         // Cria uma variável do tipo booleano para guardar o status do resultado da query
         let insertResult = false;
         let queryInsertAtracao: string;

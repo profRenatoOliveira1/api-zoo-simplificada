@@ -112,7 +112,7 @@ export class Ave extends Animal {
                     if (!await Habitat.inserirAnimalHabitat(idAnimal, idHabitat)) {
                         console.log("Erro ao cadastrar animal no habitat");
                     };
-                    
+
                     // Se o número de linhas for diferente de zero, a operação deu certo e o valor VERDADEIRO é atribuido na variável
                     insertResult = true;
                 });
@@ -127,45 +127,31 @@ export class Ave extends Animal {
         }
     }
 
-    /**
-     * Remove um animal do banco de dados
-     * @param idAnimal ID do animal a ser removido
-     * @returns **true** caso deletado, **false** caso erro na função
-     */
     static async removerAve(idAnimal: number): Promise<Boolean> {
         // Variável para controlar o resultado da função
         let queryResult = false;
-        
+
         try {
             // Query para deletar o animal da tabela animal_habitat
             const queryDeleteAnimalHabitat = `DELETE FROM animal_habitat WHERE idanimal=${idAnimal}`;
 
             // Executando a query
-            await database.query(queryDeleteAnimalHabitat)
-            // Testar o resultado da query
-            .then(async (result) => {
-                // Se o resultado for diferente de zero, a query foi executada com sucesso
-                if(result.rowCount != 0) {
-                    // Se a query for executado com sucesso, agora irá remover o animal tabela animal
+            await database.query(queryDeleteAnimalHabitat);
 
-                    // Query para remover o animal da tabela animal
-                    const queryDeleteAnimal = `DELETE FROM animal WHERE idanimal=${idAnimal}`;
-                    // Executa a query
-                    await database.query(queryDeleteAnimal)
-                    // Testar o resultado da query
-                    .then((result) => {
-                        // Se o resultado for diferente de zero, a query foi executada com sucesso
-                        if(result.rowCount != 0) {
-                            // atribui o valor VERDADEIRO a queryResult
-                            queryResult = true;
-                        }
-                    })
-                }
-            })
+            // Query para remover o animal da tabela animal
+            const queryDeleteAnimal = `DELETE FROM animal WHERE idanimal=${idAnimal}`;
+
+            // Executa a query
+            await database.query(queryDeleteAnimal)
+                .then((result) => {
+                    // Se o resultado for diferente de zero, a query foi executada com sucesso
+                    if (result.rowCount != 0) {
+                        queryResult = true;
+                    }
+                })
 
             // Retorna o resultado da função
             return queryResult;
-        // Caso ocorra algum erro
         } catch (error) {
             // Exibe o erro no console
             console.log(`Erro na consulta: ${error}`);
@@ -173,6 +159,56 @@ export class Ave extends Animal {
             return queryResult;
         }
     }
+
+
+    // /**
+    //  * Remove um animal do banco de dados
+    //  * @param idAnimal ID do animal a ser removido
+    //  * @returns **true** caso deletado, **false** caso erro na função
+    //  */
+    // static async removerAve(idAnimal: number): Promise<Boolean> {
+    //     console.log('aqui cheguei');
+
+    //     // Variável para controlar o resultado da função
+    //     let queryResult = false;
+
+    //     try {
+    //         // Query para deletar o animal da tabela animal_habitat
+    //         const queryDeleteAnimalHabitat = `DELETE FROM animal_habitat WHERE idanimal=${idAnimal}`;
+
+    //         // Executando a query
+    //         await database.query(queryDeleteAnimalHabitat)
+    //         // Testar o resultado da query
+    //         .then(async (result) => {
+    //             // Se o resultado for diferente de zero, a query foi executada com sucesso
+    //             if(result.rowCount != 0) {
+    //                 // Se a query for executado com sucesso, agora irá remover o animal tabela animal
+
+    //                 // Query para remover o animal da tabela animal
+    //                 const queryDeleteAnimal = `DELETE FROM animal WHERE idanimal=${idAnimal}`;
+    //                 // Executa a query
+    //                 await database.query(queryDeleteAnimal)
+    //                 // Testar o resultado da query
+    //                 .then((result) => {
+    //                     // Se o resultado for diferente de zero, a query foi executada com sucesso
+    //                     if(result.rowCount != 0) {
+    //                         // atribui o valor VERDADEIRO a queryResult
+    //                         queryResult = true;
+    //                     }
+    //                 })
+    //             }
+    //         })
+
+    //         // Retorna o resultado da função
+    //         return queryResult;
+    //     // Caso ocorra algum erro
+    //     } catch (error) {
+    //         // Exibe o erro no console
+    //         console.log(`Erro na consulta: ${error}`);
+    //         // Retorna a variável queryResult com valor FALSE
+    //         return queryResult;
+    //     }
+    // }
 
     /**
      * Atualiza as informações de uma ave no banco de dados
@@ -192,17 +228,17 @@ export class Ave extends Animal {
                                         generoAnimal='${ave.getGeneroAnimal().toUpperCase()}',
                                         envergadura=${ave.getEnvergadura()}
                                     WHERE idAnimal=${idAve}`;
-            
+
             // executa a query
             await database.query(queryUpdateAve)
-            // Testar o resultado da query
-            .then((result) => {
-                // Se o resultado for diferente de zero, a query foi executada com sucesso
-                if (result.rowCount !== 0) {      
-                    // atribui o valor VERDADEIRO a queryResult                 
-                    queryResult = true;
-                }
-            })
+                // Testar o resultado da query
+                .then((result) => {
+                    // Se o resultado for diferente de zero, a query foi executada com sucesso
+                    if (result.rowCount !== 0) {
+                        // atribui o valor VERDADEIRO a queryResult                 
+                        queryResult = true;
+                    }
+                })
             // Retorna o resultado da função
             return queryResult;
         } catch (error) {
