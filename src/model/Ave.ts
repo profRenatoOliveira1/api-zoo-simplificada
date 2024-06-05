@@ -66,9 +66,11 @@ export class Ave extends Animal {
         // Construção da query para selecionar as informações de um Ave
         const querySelectAve = `SELECT * FROM animal;`;
 
+        // Tenta executar a query no banco de dados
         try {
             // Faz a consulta no banco de dados e retorna o resultado para a variável queryReturn
             const queryReturn = await database.query(querySelectAve);
+            
             // Percorre todas as linhas da queryReturn e acessa cada objeto individualmente
             queryReturn.rows.forEach(ave => {
                 // Coloca o objeto dentro da lista de Aves
@@ -77,9 +79,12 @@ export class Ave extends Animal {
 
             // retorna a lista de Aves para quem chamou a função
             return listaDeAves;
+        
+        // caso aconteça algum erro no caminho, é lançada uma exceção
         } catch (error) {
-            // Caso dê algum erro na query do banco, é lançado o erro para quem chamou a função
+            // Exibe o erro nos logs do navegador
             console.log(`Erro no modelo\n${error}`);
+            // Retorna a mensagem abaixo para quem chamou a função
             return "error, verifique os logs do servidor";
         }
     }
@@ -92,9 +97,10 @@ export class Ave extends Animal {
      * @returns **true** caso sucesso, **false** caso erro
      */
     static async cadastrarAve(ave: Ave, idHabitat: number): Promise<Boolean> {
-        // Cria uma variável do tipo booleano para guardar o status do resultado da query
+        // Cria uma variável de controle do tipo booleano para guardar o status do resultado da query
         let insertResult = false;
 
+        // Tenta executar a query no banco de dados
         try {
             // Construção da query para inserir as informações de um Ave. A query irá retornar o ID gerado para o animal pelo banco de dados
             const queryInsertAnimal = `INSERT INTO animal (nomeAnimal, idadeAnimal, generoAnimal, envergadura) 
@@ -108,7 +114,8 @@ export class Ave extends Animal {
                 .then(async (result) => {
                     const idAnimal = result.rows[0].idanimal;
 
-                    //Inserindo o animal no Habitat
+                    // Tenta inserir um animal no habitat
+                    // Caso a função retorne FALSE, é lançado em erro nos logs do servidor
                     if (!await Habitat.inserirAnimalHabitat(idAnimal, idHabitat)) {
                         console.log("Erro ao cadastrar animal no habitat");
                     };
@@ -116,8 +123,11 @@ export class Ave extends Animal {
                     // Se o número de linhas for diferente de zero, a operação deu certo e o valor VERDADEIRO é atribuido na variável
                     insertResult = true;
                 });
+            
             // Retorna VERDADEIRO para quem chamou a função, indicando que a operação foi realizada com sucesso
             return insertResult;
+        
+        // caso aconteça algum erro no caminho, é lançada uma exceção
         } catch (error) {
             // Imprime o erro no console
             console.log(error);
@@ -131,6 +141,7 @@ export class Ave extends Animal {
         // Variável para controlar o resultado da função
         let queryResult = false;
 
+        // Tenta executar a query no banco de dados
         try {
             // Query para deletar o animal da tabela animal_habitat
             const queryDeleteAnimalHabitat = `DELETE FROM animal_habitat WHERE idanimal=${idAnimal}`;
@@ -152,6 +163,8 @@ export class Ave extends Animal {
 
             // Retorna o resultado da função
             return queryResult;
+        
+        // caso aconteça algum erro no caminho, é lançada uma exceção
         } catch (error) {
             // Exibe o erro no console
             console.log(`Erro na consulta: ${error}`);
@@ -160,55 +173,6 @@ export class Ave extends Animal {
         }
     }
 
-
-    // /**
-    //  * Remove um animal do banco de dados
-    //  * @param idAnimal ID do animal a ser removido
-    //  * @returns **true** caso deletado, **false** caso erro na função
-    //  */
-    // static async removerAve(idAnimal: number): Promise<Boolean> {
-    //     console.log('aqui cheguei');
-
-    //     // Variável para controlar o resultado da função
-    //     let queryResult = false;
-
-    //     try {
-    //         // Query para deletar o animal da tabela animal_habitat
-    //         const queryDeleteAnimalHabitat = `DELETE FROM animal_habitat WHERE idanimal=${idAnimal}`;
-
-    //         // Executando a query
-    //         await database.query(queryDeleteAnimalHabitat)
-    //         // Testar o resultado da query
-    //         .then(async (result) => {
-    //             // Se o resultado for diferente de zero, a query foi executada com sucesso
-    //             if(result.rowCount != 0) {
-    //                 // Se a query for executado com sucesso, agora irá remover o animal tabela animal
-
-    //                 // Query para remover o animal da tabela animal
-    //                 const queryDeleteAnimal = `DELETE FROM animal WHERE idanimal=${idAnimal}`;
-    //                 // Executa a query
-    //                 await database.query(queryDeleteAnimal)
-    //                 // Testar o resultado da query
-    //                 .then((result) => {
-    //                     // Se o resultado for diferente de zero, a query foi executada com sucesso
-    //                     if(result.rowCount != 0) {
-    //                         // atribui o valor VERDADEIRO a queryResult
-    //                         queryResult = true;
-    //                     }
-    //                 })
-    //             }
-    //         })
-
-    //         // Retorna o resultado da função
-    //         return queryResult;
-    //     // Caso ocorra algum erro
-    //     } catch (error) {
-    //         // Exibe o erro no console
-    //         console.log(`Erro na consulta: ${error}`);
-    //         // Retorna a variável queryResult com valor FALSE
-    //         return queryResult;
-    //     }
-    // }
 
     /**
      * Atualiza as informações de uma ave no banco de dados
@@ -220,6 +184,7 @@ export class Ave extends Animal {
         // Variável para controlar o resultado da função
         let queryResult = false;
 
+        // Tenta executar a query no banco de dados
         try {
             // Query para alterar o animal da tabela animal
             const queryUpdateAve = `UPDATE animal SET
@@ -239,8 +204,11 @@ export class Ave extends Animal {
                         queryResult = true;
                     }
                 })
+                
             // Retorna o resultado da função
             return queryResult;
+        
+        // caso aconteça algum erro no caminho, é lançada uma exceção
         } catch (error) {
             // Exibe o erro no console
             console.log(`Erro na consulta: ${error}`);

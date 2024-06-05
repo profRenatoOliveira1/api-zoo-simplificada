@@ -79,9 +79,11 @@ export class Habitat {
         // Construção da query para selecionar as informações de um habitat
         const querySelectHabitat = `SELECT * FROM habitat;`;
 
+        // Tenta executar a query no banco de dados
         try {
             // Faz a consulta no banco de dados e retorna o resultado para a variável queryReturn
             const queryReturn = await database.query(querySelectHabitat);
+
             // Percorre todas as linhas da queryReturn e acessa cada objeto individualmente
             queryReturn.rows.forEach(habitat => {
                 // Coloca o objeto dentro da lista de habitats
@@ -90,10 +92,12 @@ export class Habitat {
 
             // retorna a lista de habitats para quem chamou a função
             return listaDeHabitats;
+
+        // caso aconteça algum erro no caminho, é lançada uma exceção
         } catch (error) {
-            // Caso dê algum erro na query do banco, é lançado o erro para quem chamou a função
-            console.log('Erro no modelo');
-            console.log(error);
+            // Exibe o erro nos logs do navegador
+            console.log(`Erro no modelo ${error}`);
+            // Retorna a mensagem abaixo para quem chamou a função
             return "error, verifique os logs do servidor";
         }
     }
@@ -107,6 +111,8 @@ export class Habitat {
     static async cadastrarHabitat(habitat: Habitat): Promise<any> {
         // Cria uma variável do tipo booleano para guardar o status do resultado da query
         let insertResult = false;
+        
+        // Tenta executar a query no banco de dados
         try {
             // Construção da query para inserir as informações de um Mamifero. A query irá retornar o ID gerado para o animal pelo banco de dados
             const queryInsertHabitat = `INSERT INTO habitat (nomehabitat) 
@@ -122,8 +128,11 @@ export class Habitat {
                         insertResult = true;
                     }
                 });
+            
             // Retorna VERDADEIRO para quem chamou a função, indicando que a operação foi realizada com sucesso
             return insertResult;
+        
+        // caso aconteça algum erro no caminho, é lançada uma exceção
         } catch (error) {
             // Imprime o erro no console
             console.log(error);
@@ -138,7 +147,8 @@ export class Habitat {
      * 
      * @returns Lista com todos os habitats cadastrados e os animais vinculados a eles
      */
-    static async exibirAnimaisPorHabitat(idHabitat: number) : Promise<any> {
+    static async exibirAnimaisPorHabitat(idHabitat: number): Promise<any> {
+        // Tenta executar a query no banco de dados
         try {
             // Retorna todos os animais de um Habitat (informado como parâmetro). Caso o Habitat não tenha nenhum animal é retornado uma lista vazia
             const querySelectHabitatsComAnimais = `
@@ -160,12 +170,18 @@ export class Habitat {
                 ORDER BY
                     h.idHabitat, a.idAnimal;
             `;
-            
+
+            // Faz a query de insert no banco de dados, passando para o banco as informações do objeto recebibo como parâmetro pela função
             const queryReturn = await database.query(querySelectHabitatsComAnimais);
+            
+            // Retorna VERDADEIRO para quem chamou a função, indicando que a operação foi realizada com sucesso
             return queryReturn.rows;
+        
+        // caso aconteça algum erro no caminho, é lançada uma exceção
         } catch (error) {
-            console.log('Erro no modelo');
-            console.log(error);
+            // Exibe o erro nos logs do navegador
+            console.log(`Erro no modelo ${error}`);
+            // Retorna a mensagem abaixo para quem chamou a função
             return "error, verifique os logs do servidor";
         }
     }
@@ -180,6 +196,8 @@ export class Habitat {
     static async inserirAnimalHabitat(idAnimal: number, idHabitat: number): Promise<any> {
         // Cria uma variável do tipo booleano para guardar o status do resultado da query
         let insertResult = false;
+        
+        // Tenta executar a query no banco de dados
         try {
             // Construção da query para inserir as informações de um Mamifero. A query irá retornar o ID gerado para o animal pelo banco de dados
             const queryInsertAnimalHabitat = `INSERT INTO Animal_Habitat(idAnimal, idHabitat)
@@ -195,13 +213,15 @@ export class Habitat {
                         insertResult = true;
                     }
                 });
+            
             // Retorna VERDADEIRO para quem chamou a função, indicando que a operação foi realizada com sucesso
             return insertResult;
+        
+        // caso aconteça algum erro no caminho, é lançada uma exceção
         } catch (error) {
-            // Imprime o erro no console
-            console.log(error);
-
-            // Caso a inserção no banco der algum erro, é restorno o valor FALSO para quem chamou a função
+            // Exibe o erro no console
+            console.log(`Erro: ${error}`);
+            // Retorna a variável queryResult com valor FALSE
             return insertResult;
         }
     }
@@ -215,42 +235,45 @@ export class Habitat {
         // Variável para controlar o resultado da função
         let queryResult = false;
 
+        // Tenta executar a query no banco de dados
         try {
             // Query para deletar o habitat da tabela atracao
             const queryDeleteHabitatAtracao = `DELETE FROM atracao WHERE idHabitat=${idHabitat};`;
             // Executando a query
             await database.query(queryDeleteHabitatAtracao)
-            // Testar o resultado da query
-            .then(async (result) => {
-                // Se o resultado for diferente de zero, a query foi executada com sucesso
-                if (result.rowCount != 0) {
-                    // Query para deletar o habitat da tabela animal_habitat
-                    const queryDeleteHabitatAnimalHabitat = `DELETE FROM animal_habitat WHERE idHabitat=${idHabitat};`;
-                    // Executando a query
-                    await database.query(queryDeleteHabitatAnimalHabitat)
-                    // Testar o resultado da query
-                    .then(async (result) => {
-                        // Se o resultado for diferente de zero, a query foi executada com sucesso
-                        if (result.rowCount != 0) {
-                            // Query para deletar o habitat da tabela habitat
-                            const queryDeleteHabitat = `DELETE FROM habitat WHERE idHabitat=${idHabitat};`;
-                            // Executando a query
-                            await database.query(queryDeleteHabitat)
+                // Testar o resultado da query
+                .then(async (result) => {
+                    // Se o resultado for diferente de zero, a query foi executada com sucesso
+                    if (result.rowCount != 0) {
+                        // Query para deletar o habitat da tabela animal_habitat
+                        const queryDeleteHabitatAnimalHabitat = `DELETE FROM animal_habitat WHERE idHabitat=${idHabitat};`;
+                        // Executando a query
+                        await database.query(queryDeleteHabitatAnimalHabitat)
                             // Testar o resultado da query
                             .then(async (result) => {
                                 // Se o resultado for diferente de zero, a query foi executada com sucesso
                                 if (result.rowCount != 0) {
-                                    // atribui o valor VERDADEIRO a queryResult
-                                    queryResult = true;
+                                    // Query para deletar o habitat da tabela habitat
+                                    const queryDeleteHabitat = `DELETE FROM habitat WHERE idHabitat=${idHabitat};`;
+                                    // Executando a query
+                                    await database.query(queryDeleteHabitat)
+                                        // Testar o resultado da query
+                                        .then(async (result) => {
+                                            // Se o resultado for diferente de zero, a query foi executada com sucesso
+                                            if (result.rowCount != 0) {
+                                                // atribui o valor VERDADEIRO a queryResult
+                                                queryResult = true;
+                                            }
+                                        })
                                 }
                             })
-                        }
-                    })
-                }
-            })
+                    }
+                })
+            
             // Retorna o resultado da função
             return queryResult;
-        // Caso ocorra algum erro
+        
+        // caso aconteça algum erro no caminho, é lançada uma exceção
         } catch (error) {
             // Exibe o erro no console
             console.log(`Erro: ${error}`);
@@ -270,6 +293,7 @@ export class Habitat {
         // Variável para controlar o resultado da função
         let queryResult = false;
 
+        // Tenta executar a query no banco de dados
         try {
             // Query para alterar o animal da tabela animal
             const queryUpdateHabitat = `UPDATE habitat SET
@@ -278,16 +302,18 @@ export class Habitat {
 
             // Executa a query
             await database.query(queryUpdateHabitat)
-            // Testar o resultado da query
-            .then((result) => {
-                // Se o resultado for diferente de zero, a query foi executada com sucesso
-                if(result.rowCount !== 0) {
-                    // atribui o valor VERDADEIRO a queryResult 
-                    queryResult = true;
-                }
-            })
+                // Testar o resultado da query
+                .then((result) => {
+                    // Se o resultado for diferente de zero, a query foi executada com sucesso
+                    if (result.rowCount !== 0) {
+                        // atribui o valor VERDADEIRO a queryResult 
+                        queryResult = true;
+                    }
+                })
             // Retorna o resultado da função
             return queryResult;
+        
+        // caso aconteça algum erro no caminho, é lançada uma exceção
         } catch (error) {
             // Exibe o erro no console
             console.log(`Erro: ${error}`);

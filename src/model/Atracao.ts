@@ -1,4 +1,3 @@
-import { query } from "express";
 import { DatabaseModel } from "./DatabaseModel";
 import { Habitat } from "./Habitat";
 
@@ -80,9 +79,11 @@ export class Atracao {
         // Construção da query para selecionar as informações de um atracao
         const querySelectAtracao = `SELECT * FROM atracao;`;
 
+        // Tenta executar a query no banco de dados
         try {
             // Faz a consulta no banco de dados e retorna o resultado para a variável queryReturn
             const queryReturn = await database.query(querySelectAtracao);
+            
             // Percorre todas as linhas da queryReturn e acessa cada objeto individualmente
             queryReturn.rows.forEach(atracao => {
                 // Coloca o objeto dentro da lista de atrações
@@ -91,10 +92,12 @@ export class Atracao {
 
             // retorna a lista de atrações para quem chamou a função
             return listaDeAtracoes;
+        
+        // caso aconteça algum erro no caminho, é lançada uma exceção
         } catch (error) {
-            // Caso dê algum erro na query do banco, é lançado o erro para quem chamou a função
-            console.log('Erro no modelo');
-            console.log(error);
+            // Exibe o erro nos logs do navegador
+            console.log(`Erro no modelo ${error}`);
+            // Retorna a mensagem abaixo para quem chamou a função
             return "error, verifique os logs do servidor";
         }
     }
@@ -122,9 +125,12 @@ export class Atracao {
      * Implementação da classe cadastrarAtracao
      */
     static async cadastrarAtracao(atracao: Atracao, idHabitat?: Habitat): Promise<boolean> {
-        // Cria uma variável do tipo booleano para guardar o status do resultado da query
+        // Cria uma variável de controle do tipo booleano para guardar o status do resultado da query
         let insertResult = false;
+        // Cria uma variável para armazenar a query que será executada no banco de dados
         let queryInsertAtracao: string;
+        
+        // Tenta executar a query no banco de dados
         try {
             if(!idHabitat) {
                 // Construção da query para inserir as informações de um Mamifero. A query irá retornar o ID gerado para o animal pelo banco de dados
@@ -147,8 +153,11 @@ export class Atracao {
                         insertResult = true;
                     }
                 });
+            
             // Retorna VERDADEIRO para quem chamou a função, indicando que a operação foi realizada com sucesso
             return insertResult;
+        
+        // caso aconteça algum erro no caminho, é lançada uma exceção
         } catch (error) {
             // Imprime o erro no console
             console.log(error, insertResult);
@@ -168,6 +177,7 @@ export class Atracao {
         // Variável para controlar o resultado da função 
         let queryResult = true;
 
+        // Tenta executar a query no banco de dados
         try {
             // Query para deletar a atração da tabela atracao
             const queryDeleteAtracao = `DELETE FROM atracao WHERE idatracao=${idAtracao};`;
@@ -185,7 +195,8 @@ export class Atracao {
 
             // Retorna o resultado da função
             return queryResult;
-        // Caso ocorra algum erro
+        
+        // caso aconteça algum erro no caminho, é lançada uma exceção
         } catch (error) {
             // Exibe o erro no console
             console.log(`Erro: ${error}`);
@@ -205,6 +216,7 @@ export class Atracao {
         // Variável para controlar o resultado da função
         let queryResult = false;
 
+        // Tenta executar a query no banco de dados
         try {
             // Query para alterar a atração da tabela atração
             const queryUpdateAtracao = `UPDATE atracao SET
@@ -223,8 +235,10 @@ export class Atracao {
             })
             // Retorna o resultado da função
             return queryResult;
+
+        // caso aconteça algum erro no caminho, é lançada uma exceção
         } catch (error) {
-            // Exibe o erro no console
+            // Exibe o erro nos logs do servidor
             console.log(`Erro: ${error}`);
             // Retorna a variável queryResult com valor FALSE
             return queryResult;
