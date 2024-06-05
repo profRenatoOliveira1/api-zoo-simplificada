@@ -132,13 +132,16 @@ export class Atracao {
         
         // Tenta executar a query no banco de dados
         try {
+            // Verifica se o idHabitat foi passado como um parâmetro para a função
             if(!idHabitat) {
-                // Construção da query para inserir as informações de um Mamifero. A query irá retornar o ID gerado para o animal pelo banco de dados
+                // Caso não tenha sido passado
+                // Construção da query para inserir as informações de uma Ave. A query irá retornar o ID gerado para o animal pelo banco de dados
                 queryInsertAtracao = `INSERT INTO atracao (nomeatracao) 
                                             VALUES 
                                             ('${atracao.getNomeAtracao().toUpperCase()}');`;
             } else {
-                // Construção da query para inserir as informações de um Mamifero. A query irá retornar o ID gerado para o animal pelo banco de dados
+                // Caso tenha sido passado
+                // Construção da query para inserir as informações de uma Ave. A query irá retornar o ID gerado para o animal pelo banco de dados
                 queryInsertAtracao = `INSERT INTO atracao (nomeatracao, idhabitat) 
                                             VALUES 
                                             ('${atracao.getNomeAtracao().toUpperCase()}', ${idHabitat});`;
