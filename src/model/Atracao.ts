@@ -72,7 +72,7 @@ export class Atracao {
      * 
      * @returns Lista com todos as atrações cadastradas no banco de dados
      */
-    static async listarAtracoes(): Promise<any> {
+    static async listarAtracoes(): Promise<Array<Atracao> | string> {
         // Cria uma lista (array) vazia do tipo atracao
         const listaDeAtracoes: Array<Atracao> = [];
 
@@ -124,7 +124,7 @@ export class Atracao {
     /**
      * Implementação da classe cadastrarAtracao
      */
-    static async cadastrarAtracao(atracao: Atracao, idHabitat?: Habitat): Promise<boolean> {
+    static async cadastrarAtracao(atracao: Atracao, idHabitat?: Habitat): Promise<Boolean> {
         // Cria uma variável de controle do tipo booleano para guardar o status do resultado da query
         let insertResult = false;
         // Cria uma variável para armazenar a query que será executada no banco de dados
